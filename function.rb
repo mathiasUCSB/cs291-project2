@@ -25,7 +25,7 @@ end
 
 def handle_post(event)
   # Guard clause for valid content-type
-  unless event['headers']['Content-Type'] == 'application/json'
+  unless event['headers'].transform_keys(&:downcase)['content-type'] == 'application/json'
       return response(body: {error: 'Unsupported Media Type'}, status: 415)
   end
 
@@ -48,7 +48,7 @@ def handle_post(event)
 end
 
 def handle_get(event)
-  auth_header = event['headers']['Authorization']
+  auth_header = event['headers'].transform_keys(&:downcase)['authorization']
   unless auth_header && auth_header.start_with?('Bearer ')
     return response(body: {error: 'Forbidden'}, status: 403)
   end
